@@ -44,7 +44,7 @@ const { withAuth } = createAuth({
 export default withAuth({
   server: {
     cors: {
-      origin: '*',
+      origin: true,
       credentials: true,
     },
   },
