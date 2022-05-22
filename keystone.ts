@@ -75,6 +75,14 @@ export default withAuth(
       Order,
       Role,
     }),
+    graphql: {
+      // @ts-ignore
+      apolloConfig: {
+        cors: {
+          origin: originWhiteList,
+        },
+      },
+    },
     extendGraphqlSchema,
     ui: {
       // Show the UI only for people who pass this test
