@@ -51,7 +51,7 @@ export default withAuth(
   config({
     server: {
       cors: {
-        origin: originWhiteList,
+        origin: 'https://sick-fits-frontend-inky.vercel.app',
         credentials: true,
       },
     },
@@ -78,7 +78,7 @@ export default withAuth(
     graphql: {
       // @ts-ignore
       cors: {
-        origin: originWhiteList,
+        origin: 'https://sick-fits-frontend-inky.vercel.app',
       },
     },
     extendGraphqlSchema,
