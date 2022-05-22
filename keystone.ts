@@ -21,6 +21,12 @@ import { permissionsList } from './schemas/fields';
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost/keystone-sick-fits-tutorial';
 
+const originWhiteList = [
+  'https://sick-fits-frontend-git-main-kylethieves.vercel.app',
+  'https://sick-fits-frontend-kylethieves.vercel.app',
+  'https://sick-fits-frontend-git-main-kylethieves.vercel.app/',
+];
+
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, // How long should they stay signed in?
   secret: process.env.COOKIE_SECRET,
@@ -45,7 +51,7 @@ export default withAuth(
   config({
     server: {
       cors: {
-        origin: '*',
+        origin: originWhiteList,
         credentials: true,
       },
     },
