@@ -77,10 +77,8 @@ export default withAuth(
     }),
     graphql: {
       // @ts-ignore
-      apolloConfig: {
-        cors: {
-          origin: originWhiteList,
-        },
+      cors: {
+        origin: originWhiteList,
       },
     },
     extendGraphqlSchema,
