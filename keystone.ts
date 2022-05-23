@@ -14,7 +14,7 @@ import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
-
+// test
 const databaseURL = process.env.DATABASE_URL || 'file:./app.db';
 
 const sessionConfig = {
