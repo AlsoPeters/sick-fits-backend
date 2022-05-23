@@ -15,7 +15,7 @@ import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
 import { addCompatibilityForQueries } from './compat';
 // test
-const databaseURL = process.env.DATABASE_URL || 'file:./app.db';
+const databaseURL = 'file:./app.db';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
