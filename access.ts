@@ -38,7 +38,7 @@ export const rules = {
       return true;
     }
     // 2. If not, do they own this item?
-    return { user: { id: session.itemId } };
+    return { user: { id: { equals: session?.itemId } } };
   },
 
   canOrder({ session }: ListAccessArgs) {
@@ -48,7 +48,7 @@ export const rules = {
     if (permissions.canManageCart({ session })) {
       return true;
     }
-    return { user: { id: session.itemId } };
+    return { user: { id: { equals: session?.itemId } } };
   },
 
   canManageOrderItems({ session }: ListAccessArgs) {
@@ -58,7 +58,7 @@ export const rules = {
     if (permissions.canManageCart({ session })) {
       return true;
     }
-    return { order: { user: { id: session.itemId } } };
+    return { order: { user: { id: { equals: session?.itemId } } } };
   },
 
   canReadProducts({ session }: ListAccessArgs) {
@@ -70,7 +70,7 @@ export const rules = {
       return true; // They can read everything.
     }
     // They should only see available products (based on the status field)
-    return { status: 'AVAILABLE' };
+    return { status: { equals: 'AVAILABLE' } };
   },
   canManageUsers({ session }: ListAccessArgs) {
     if (!isSignedIn({ session })) {
@@ -80,6 +80,6 @@ export const rules = {
       return true;
     }
     // Otherwise they may only update themselves.
-    return { id: session.itemId };
+    return { id: { equals: session?.itemId } };
   },
 };

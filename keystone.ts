@@ -1,34 +1,24 @@
-import { createAuth } from '@keystone-next/auth';
-import { config, createSchema } from '@keystone-next/keystone/schema';
-import {
-  withItemData,
-  statelessSessions,
-} from '@keystone-next/keystone/session';
+import { createAuth } from '@keystone-6/auth';
+import { config } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
+import { permissionsList } from './schemas/fields';
 import { Role } from './schemas/Role';
-import { User } from './schemas/User';
-import { CartItem } from './schemas/CartItem';
 import { OrderItem } from './schemas/OrderItem';
 import { Order } from './schemas/Order';
-import { Product } from './schemas/Product';
+import { CartItem } from './schemas/CartItem';
 import { ProductImage } from './schemas/ProductImage';
+import { Product } from './schemas/Product';
+import { User } from './schemas/User';
 import 'dotenv/config';
-
 import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
 import { extendGraphqlSchema } from './mutations';
-import { permissionsList } from './schemas/fields';
+import { addCompatibilityForQueries } from './compat';
 
-const databaseURL =
-  process.env.DATABASE_URL || 'mongodb://localhost/keystone-sick-fits-tutorial';
-
-const originWhiteList = [
-  'https://sick-fits-frontend-git-main-kylethieves.vercel.app',
-  'https://sick-fits-frontend-kylethieves.vercel.app',
-  'https://sick-fits-frontend-git-main-kylethieves.vercel.app/',
-];
+const databaseURL = process.env.DATABASE_URL || 'file:./app.db';
 
 const sessionConfig = {
-  maxAge: 60 * 60 * 24 * 360, // How long should they stay signed in?
+  maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
   secret: process.env.COOKIE_SECRET,
 };
 
@@ -38,10 +28,12 @@ const { withAuth } = createAuth({
   secretField: 'password',
   initFirstItem: {
     fields: ['name', 'email', 'password'],
-    // TODO: add in initial roles here
+    // TODO: Add in inital roles here
   },
+  sessionData: `id name email role { ${permissionsList.join(' ')} }`,
   passwordResetLink: {
     async sendToken(args) {
+      // send the email
       await sendPasswordResetEmail(args.token, args.identity);
     },
   },
@@ -49,23 +41,24 @@ const { withAuth } = createAuth({
 
 export default withAuth(
   config({
+    // @ts-ignore
     server: {
       cors: {
-        origin: 'https://sick-fits-frontend-inky.vercel.app',
+        origin: [process.env.FRONTEND_URL],
         credentials: true,
       },
     },
     db: {
-      adapter: 'mongoose',
+      provider: 'sqlite',
       url: databaseURL,
-      async onConnect(keystone) {
-        console.log('------- Connected to the database! -------');
+      async onConnect(context) {
+        console.log('Connected to the database!');
         if (process.argv.includes('--seed-data')) {
-          await insertSeedData(keystone);
+          await insertSeedData(context.prisma);
         }
       },
     },
-    lists: createSchema({
+    lists: {
       // Schema items go in here
       User,
       Product,
@@ -74,23 +67,15 @@ export default withAuth(
       OrderItem,
       Order,
       Role,
-    }),
-    graphql: {
-      // @ts-ignore
-      cors: {
-        origin: 'https://sick-fits-frontend-inky.vercel.app',
-      },
     },
-    extendGraphqlSchema,
+    extendGraphqlSchema: (schema) =>
+      addCompatibilityForQueries(extendGraphqlSchema(schema)),
     ui: {
-      // Show the UI only for people who pass this test
+      // Show the UI only for poeple who pass this test
       isAccessAllowed: ({ session }) =>
         // console.log(session);
         !!session?.data,
     },
-    session: withItemData(statelessSessions(sessionConfig), {
-      // GraphQL Query
-      User: `id name email role { ${permissionsList.join(' ')} }`,
-    }),
+    session: statelessSessions(sessionConfig),
   })
 );

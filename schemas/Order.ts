@@ -4,24 +4,30 @@ import {
   select,
   text,
   virtual,
-} from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+} from '@keystone-6/core/fields';
+import { list, graphql } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
 import formatMoney from '../lib/formatMoney';
 
 export const Order = list({
   access: {
-    create: isSignedIn,
-    read: rules.canOrder,
-    update: () => false, // maybe need arrow function to false
-    delete: () => false,
+    operation: {
+      create: isSignedIn,
+      update: () => false, // maybe need arrow function to false
+      delete: () => false,
+    },
+    filter: {
+      query: rules.canOrder,
+    },
   },
   fields: {
     label: virtual({
-      graphQLReturnType: 'String',
-      resolver(item) {
-        return `Check it out ${formatMoney(item.total)}`;
-      },
+      field: graphql.field({
+        type: graphql.String,
+        resolve(item) {
+          return `${formatMoney(item.total)}`;
+        },
+      }),
     }),
     total: integer(),
     items: relationship({ ref: 'OrderItem.order', many: true }),

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { KeystoneContext } from '@keystone-next/types';
+import { KeystoneContext } from '@keystone-6/core/types';
 import {
   CartItemCreateInput,
   OrderCreateInput,

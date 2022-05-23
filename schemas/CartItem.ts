@@ -1,13 +1,17 @@
-import { integer, relationship, select, text } from '@keystone-next/fields';
-import { list } from '@keystone-next/keystone/schema';
+import { integer, relationship, select, text } from '@keystone-6/core/fields';
+import { list } from '@keystone-6/core';
 import { isSignedIn, rules } from '../access';
 
 export const CartItem = list({
   access: {
-    create: isSignedIn,
-    read: rules.canOrder,
-    update: rules.canOrder,
-    delete: rules.canOrder,
+    operation: {
+      create: isSignedIn,
+    },
+    filter: {
+      query: rules.canOrder,
+      update: rules.canOrder,
+      delete: rules.canOrder,
+    },
   },
   ui: {
     listView: {
@@ -18,7 +22,7 @@ export const CartItem = list({
     // TODO: Custom label in here
     quantity: integer({
       defaultValue: 1,
-      isRequired: true,
+      validation: { isRequired: true },
     }),
     product: relationship({ ref: 'Product' }),
     user: relationship({ ref: 'User.cart' }),
