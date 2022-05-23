@@ -8,7 +8,7 @@
     "dev": "keystone",
     "seed-data": "keystone --seed-data",
     "start": "keystone start",
-    "build": "keystone build --seed-data"
+    "build": "keystone build"
   },
   "eslintConfig": {
     "extends": "wesbos/typescript.js",
