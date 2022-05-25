@@ -70,7 +70,7 @@
     "fsevents": "*"
   },
   "engines": {
-    "node": ">=12.6.0"
+    "node": "12.x"
   },
   "repository": "https://github.com/keystonejs/keystone/tree/master/examples-next/ecommerce"
 }
