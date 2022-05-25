@@ -48,6 +48,9 @@ export default withAuth(
         credentials: true,
       },
     },
+    graphql: {
+      playground: true,
+    },
     db: {
       provider: 'sqlite',
       url: databaseURL,

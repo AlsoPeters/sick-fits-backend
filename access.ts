@@ -21,7 +21,7 @@ const generatedPermissions = Object.fromEntries(
 export const permissions = {
   ...generatedPermissions,
   isAwesome({ session }: ListAccessArgs): boolean {
-    return session?.data.name.includes('AlsoPeters');
+    return session?.data.name.includes(true);
   },
 };
 
