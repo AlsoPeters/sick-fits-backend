@@ -49,6 +49,7 @@ export default withAuth(
       },
     },
     graphql: {
+      introspection: true,
       playground: true,
     },
     db: {
